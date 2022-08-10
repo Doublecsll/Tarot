@@ -57,33 +57,40 @@
         }
     </style>
     <script>
+        var apiData;
         //confirm the seletion
         function firstCheck() {
             var output = '';
-            const row = ['<div class="row"><div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">',
-                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">',
-                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">',
-                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">',
-                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">',
-                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
-            ];
-            const image = ['<img src="./img/magician.jpg" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>',
-                '<img src="./img/cups11.png" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>',
-                '<img src="./img/emperor.jpg" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>',
-                '<img src="./img/fool.png" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>',
-                '<img src="./img/emperor.jpg" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>',
-                '<img src="./img/fool.png" alt="Avatar" style="width:200px;height:250px;"></div></div></div></div>'];
             console.log(document.getElementById("area").value);
             if (document.getElementById("area").value === "") {
                 alert("Sorry you have to write down your question then continue!");
             } else {
                 console.log(document.getElementById("spread").value);
                 for (let i = 0; i <= document.getElementById("spread").value; i++) {
-                    output += row[i] + image[i];
+                    const randomNum=Math.floor(Math.random()*Object.keys( apiData ).length);
+                    if (i==1||i==4||i==7) {
+                        output += '<div class="row">' +
+                            '<div class="col-' + i + '"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
+                        '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
+                    }
+                    if (i % 3 == 0) {
+                        output += '</div>'
+                    }
+                    output +=
+                        '<div class="col-' + i + '"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
+                    '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
+
                 }
+                console.log(output)
                 document.getElementById("tarotcard").innerHTML = output;
             }
 
+
+        }
+
+        function start() {
+            callApi()
+            firstCheck()
 
         }
 
@@ -92,7 +99,7 @@
         function callApi() {
             var request = new XMLHttpRequest();
             // 2.設定請求方法與路徑
-            request.open("get", "/c/Users/User/desktop/tarot.json");  //網站是api的網址或文檔位置
+            request.open("get", "http://localhost:10888/tarot/getAllCard");  //網站是api的網址或文檔位置
             console.log()
             // 3.不傳送資料到伺服器，如果是有要跟backend合作才需要
             request.send(null);
@@ -100,6 +107,8 @@
             request.onload = function () {
                 if (request.status == 200) {
                     var data = JSON.parse(request.responseText);
+                    apiData = data;
+                    
                 }
             }
         }
@@ -141,93 +150,12 @@
                 <option value="4">5 card spread</option>
                 <option value="5">6 card spread</option>
             </select>
-            <button type="button" name="confirm" onclick="firstCheck()">Confirm</button>
+            <button type="button" name="confirm" onclick="start()">Confirm</button>
         </div>
 
         <!-- tarot card -->
         <div class="container" id="tarotcard">
-            <div class="row">
-                <!--  <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/fool.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/magician.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/high_priestess.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div> 
-            </div>-->
-
-                <!-- row2 -->
-                <!-- <div class="row">
-                <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/wands11.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/emperor.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-4">
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                            <div class="flip-card-back">
-                                <img src="./img/empress.jpg" alt="Avatar" style="width:200px;height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-            </div>
         </div>
         <!-- tarot spread card end -->
         <div>
