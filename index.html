@@ -61,14 +61,12 @@
         //confirm the seletion
         function firstCheck() {
             var output = '';
-            console.log(document.getElementById("area").value);
             if (document.getElementById("area").value === "") {
                 alert("Sorry you have to write down your question then continue!");
-            } else {
-                console.log(document.getElementById("spread").value);
+            } else {                
                 for (let i = 0; i <= document.getElementById("spread").value; i++) {
                     const randomNum=Math.floor(Math.random()*Object.keys( apiData ).length);
-                    if (i==1||i==4||i==7) {
+                     if (i==0||i==3||i==6) {
                         output += '<div class="row">' +
                             '<div class="col-' + i + '"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
                         '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
@@ -107,8 +105,7 @@
             request.onload = function () {
                 if (request.status == 200) {
                     var data = JSON.parse(request.responseText);
-                    apiData = data;
-                    
+                    apiData = data; 
                 }
             }
         }
