@@ -63,27 +63,25 @@
             var output = '';
             if (document.getElementById("area").value === "") {
                 alert("Sorry you have to write down your question then continue!");
-            } else {                
+            } else {
                 for (let i = 0; i <= document.getElementById("spread").value; i++) {
-                    const randomNum=Math.floor(Math.random()*Object.keys( apiData ).length);
-                     if (i==0||i==3||i==6) {
+                    const randomNum = Math.floor(Math.random() * Object.keys(apiData).length);
+                    if (i == 0 || i == 3 || i == 6) {
                         output += '<div class="row">' +
-                            '<div class="col-' + i + '"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
-                        '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
-                    }
-                    if (i % 3 == 0) {
-                        output += '</div>'
-                    }
-                    output +=
-                        '<div class="col-' + i + '"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
-                    '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
-
+                            '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
+                            + '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
+                    } else
+                        if (i % 3 == 0) {
+                            output += '</div>'
+                        } else {
+                            output +=
+                                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
+                                + '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
+                        }
                 }
                 console.log(output)
                 document.getElementById("tarotcard").innerHTML = output;
             }
-
-
         }
 
         function start() {
@@ -105,7 +103,7 @@
             request.onload = function () {
                 if (request.status == 200) {
                     var data = JSON.parse(request.responseText);
-                    apiData = data; 
+                    apiData = data;
                 }
             }
         }
