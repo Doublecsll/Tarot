@@ -107,6 +107,67 @@
                 }
             }
         }
+
+        //add card to api
+        function addCard() {
+            var url = "http://localhost:10888/tarot/createCard";
+
+            var data = {};
+            data.name = document.getElementById('cardName').value;      //这里要的是对应你要输入的内容,左边是必须填入的信息（限定前台一定要填写）=右边是从哪里来的资料，所以后面取html里面id的value(值)
+            data.suite = document.getElementById('suite').value;
+            data.image = document.getElementById('image').value;
+            data.description = document.getElementById('description').value;
+            data.interpretation = document.getElementById('interpretation').value;
+            var json = JSON.stringify(data);
+
+            var addCard = new XMLHttpRequest();
+            addCard.open("POST", url, true);
+            addCard.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            addCard.onload = function () {
+                var card = JSON.parse(addCard.responseText);
+
+                if (addCard.readyState == 4 && addCard.status == "200") {
+                    alert('add successfully');
+                } else {
+                    alert('fail!add again')
+                }
+            }
+            addCard.send(json);
+        }
+
+        //delete card
+        function delCard() { }
+        var url = "http://localhost:10888/tarot/deleteCard";
+        var xhr = new XMLHttpRequest();
+        xhr.open("DELETE", url + "?name=document.getElementById('cardName').value" + "&name=document.getElementById('suite').value", true);
+        xhr.onload = function () {
+            var users = JSON.parse(xhr.responseText);
+            if (xhr.readyState == 4 && xhr.status == "200") {
+                console.table(users);
+            } else {
+                console.error(users);
+            }
+        }
+        xhr.send(null);
+
+        //check card
+        function checkCard() {
+            var request = new XMLHttpRequest();
+            var url = "http://localhost:10888/tarot/checkCard"
+            // 2.設定請求方法與路徑
+            request.open("get", url + "?name=document.getElementById('cardName').value");  //網站是api的網址或文檔位置
+            console.log()
+            // 3.不傳送資料到伺服器，如果是有要跟backend合作才需要
+            request.send(null);
+            //4.XHR物件獲取到返回資訊後執行,下面這個request.onload必須寫呀還有下面的==200到Json那條，其他格式都差不多用for ll
+            request.onload = function () {
+                if (request.status == 200) {
+                    var data = JSON.parse(request.responseText);
+                    apiData = data;
+                }
+            }
+        }
+
     </script>
 
 </head>
@@ -167,6 +228,20 @@
                 </div>
             </div>
         </div>
+
+        <div>
+            <h2>4.Add your own card</h2>
+            <h4>Card Name:<input type="text" id="cardName"></h4>
+            <h4>Suite:<input type="text" id="suite"></h4>
+            <h4>image upload:<input type="text" id="image"></h4>
+            <h4>description:<input type="text" id="description"></h4>
+            <h4>interpretation:<input type="text" id="interpretation"></h4>
+            <button type="button" onclick="addCard()">Submit</button>
+            <button type="button" onclick="delCard()">Delete card</button>
+            <button type="button" onclick="checkCard()">Check card</button>
+
+        </div>
+
 
     </div>
 
