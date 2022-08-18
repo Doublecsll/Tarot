@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap below-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
         integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -13,191 +14,34 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
         crossorigin="anonymous"></script>
-    <title>Document</title>
-
-    <style>
-        .flip-card {
-            background-color: transparent;
-            width: 200px;
-            height: 250px;
-            perspective: 500px;
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transform-style: preserve-3d;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front,
-        .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-        }
-
-        .flip-card-front {
-            background-color: #bbb;
-            color: black;
-        }
-
-        .flip-card-back {
-            background-color: #2980b9;
-            color: white;
-            transform: rotateY(180deg);
-        }
-    </style>
-    <script>
-        var apiData;
-        //confirm the seletion
-        function firstCheck() {
-            var output = '';
-            if (document.getElementById("area").value === "") {
-                alert("Sorry you have to write down your question then continue!");
-            } else {
-                for (let i = 0; i <= document.getElementById("spread").value; i++) {
-                    const randomNum = Math.floor(Math.random() * Object.keys(apiData).length);
-                    if (i == 0 || i == 3 || i == 6) {
-                        output += '<div class="row">' +
-                            '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
-                            + '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
-                    } else
-                        if (i % 3 == 0) {
-                            output += '</div>'
-                        } else {
-                            output +=
-                                '<div class="col-4"><div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><img src="./img/b.PNG" alt="Avatar" style="width:200px;height:250px;"></div><div class="flip-card-back">'
-                                + '<img src="' + apiData[randomNum].image + '" alt="' + apiData[randomNum].name + '" style="width:200px;height:250px;"></div></div></div></div>'
-                        }
-                }
-                console.log(output)
-                document.getElementById("tarotcard").innerHTML = output;
-            }
-        }
-
-        function start() {
-            callApi()
-            firstCheck()
-
-        }
-
-
-        //read Json inside
-        function callApi() {
-            var request = new XMLHttpRequest();
-            // 2.設定請求方法與路徑
-            request.open("get", "http://localhost:10888/tarot/getAllCard");  //網站是api的網址或文檔位置
-            console.log()
-            // 3.不傳送資料到伺服器，如果是有要跟backend合作才需要
-            request.send(null);
-            //4.XHR物件獲取到返回資訊後執行,下面這個request.onload必須寫呀還有下面的==200到Json那條，其他格式都差不多用for ll
-            request.onload = function () {
-                if (request.status == 200) {
-                    var data = JSON.parse(request.responseText);
-                    apiData = data;
-                }
-            }
-        }
-
-        //add card to api
-        function addCard() {
-            var url = "http://localhost:10888/tarot/createCard";
-
-            var data = {};
-            data.name = document.getElementById('cardName').value;      //这里要的是对应你要输入的内容,左边是必须填入的信息（限定前台一定要填写）=右边是从哪里来的资料，所以后面取html里面id的value(值)
-            data.suite = document.getElementById('suite').value;
-            data.image = document.getElementById('image').value;
-            data.description = document.getElementById('description').value;
-            data.interpretation = document.getElementById('interpretation').value;
-            var json = JSON.stringify(data);
-
-            var addCard = new XMLHttpRequest();
-            addCard.open("POST", url, true);
-            addCard.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-            addCard.onload = function () {
-                var card = JSON.parse(addCard.responseText);
-
-                if (addCard.readyState == 4 && addCard.status == "200") {
-                    alert('add successfully');
-                } else {
-                    alert('fail!add again')
-                }
-            }
-            addCard.send(json);
-        }
-
-        //delete card
-        function delCard() { }
-        var url = "http://localhost:10888/tarot/deleteCard";
-        var xhr = new XMLHttpRequest();
-        xhr.open("DELETE", url + "?name=document.getElementById('cardName').value" + "&name=document.getElementById('suite').value", true);
-        xhr.onload = function () {
-            var users = JSON.parse(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == "200") {
-                console.table(users);
-            } else {
-                console.error(users);
-            }
-        }
-        xhr.send(null);
-
-        //check card
-        function checkCard() {
-            var request = new XMLHttpRequest();
-            var url = "http://localhost:10888/tarot/checkCard"
-            // 2.設定請求方法與路徑
-            request.open("get", url + "?name=document.getElementById('cardName').value");  //網站是api的網址或文檔位置
-            console.log()
-            // 3.不傳送資料到伺服器，如果是有要跟backend合作才需要
-            request.send(null);
-            //4.XHR物件獲取到返回資訊後執行,下面這個request.onload必須寫呀還有下面的==200到Json那條，其他格式都差不多用for ll
-            request.onload = function () {
-                if (request.status == 200) {
-                    var data = JSON.parse(request.responseText);
-                    apiData = data;
-                }
-            }
-        }
-
-    </script>
+    <!-- bootstrap end -->
+    <!-- google font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+    <!-- css -->
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+    <title>Tarot</title>
 
 </head>
 
 <body>
     <!-- navbar-->
-    <nav class="navbar navbar-light bg-light">
-        <span class="navbar-brand mb-0 h2">Tarot</span>
-        <div class="btn-group dropleft">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                aria-expanded="false">
-                Dropleft
-            </button>
-            <div class="dropdown-menu">
-                <!-- Dropdown menu links -->
-                <a href="#" alt="a">a</a>
-                <a href="#" alt="b">b</a>
-                <a href="#" alt="c">c</a>
-                <a href="#" alt="d">d</a>
-                <a href="#" alt="e">e</a>
-            </div>
-        </div>
+    <div style="background-color:black;">
+        <img src="./img/head.png" alt="headImg" style="width: 28%;margin-left: auto;margin-right: auto;display:block;">
+    </div>
+    <nav class="navbar navbar-light bg-light" style="background:linear-gradient(#C8B644, #487651) !important;">
+        <span class="navbar-brand mb-0 mm h1" style="color:white;">&#129497 Hi there~I'm waiting for you.</span>
+        <button class="button2" onclick="cardTest()">Card Test</button>
     </nav>
 
-    <div style="align-content: center;">
-        <h2>1.What is your question?</h2>
-        <input type="textarea" style="width:400px; height:100px;" id="area">
+    <div style="text-align: center;margin-top: 5%;">
+        <h2>&#128151 What is your question?&#128151</h2>
+        <h5 id="w1">(&#128302 Write down and think about it three times, then choose spread. )</h5>
+        <h5 id="w2" style="display:none;">(We keep it for you as a secret!&#129323)</h5>
+        <input type="textarea" style="width:500px; height:100px;margin-top: 15px;" id="area">
         <div>
-            <label for="spread">
-                <h2>2.Tarot spread select:</h2>
+            <label for="spread" style="margin-top:20px;">
+                <h2>&#128151 Tarot spread select:</h2>
             </label>
             <select name="spread" id="spread">
                 <option value="0">1 card spread</option>
@@ -206,47 +50,33 @@
                 <option value="4">5 card spread</option>
                 <option value="5">6 card spread</option>
             </select>
-            <button type="button" name="confirm" onclick="start()">Confirm</button>
+            <button name="confirm" onclick="start()" class="button1">Confirm</button>
+            <button name="Again" onclick="refresh()" class="button1">Try again</button>
+            
         </div>
 
         <!-- tarot card -->
-        <div class="container" id="tarotcard">
-
-        </div>
+        <div class="container" id="tarotcard"></div>
         <!-- tarot spread card end -->
-        <div>
-            <h2>3.Spread Description</h2>
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link" id="nav-home-tab" data-toggle="tab" data-target="#nav-home" type="button"
-                        role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
-                </div>
-
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade " id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...
-                </div>
-            </div>
-        </div>
 
         <div>
-            <h2>4.Add your own card</h2>
-            <h4>Card Name:<input type="text" id="cardName"></h4>
-            <h4>Suite:<input type="text" id="suite"></h4>
-            <h4>image upload:<input type="text" id="image"></h4>
-            <h4>description:<input type="text" id="description"></h4>
-            <h4>interpretation:<input type="text" id="interpretation"></h4>
-            <button type="button" onclick="addCard()">Submit</button>
-            <button type="button" onclick="delCard()">Delete card</button>
-            <button type="button" onclick="checkCard()">Check card</button>
-
+            <h2 id="w3" style="display:none;margin: 20px;">&#128151 Spread Description&#128151</h2>
+            <div id="card1"></div>
         </div>
-
-
     </div>
 
-
-
+    <!-- api test -->
+    <div style="text-align:center;display: none;" id="apiTest">
+        <h2>Add your own card</h2>
+        <h4>Card Name:<input type="text" id="cardName"></h4>
+        <h4>Suite:<input type="text" id="suite"></h4>
+        <h4>image upload:<input type="text" id="image"></h4>
+        <h4>description:<input type="text" id="description"></h4>
+        <h4>interpretation:<input type="text" id="interpretation"></h4>
+        <button type="button" onclick="addCard()" class="button1">Add card</button>
+        <button type="button" onclick="delCard()" class="button1">Delete card</button>
+        <button type="button" onclick="checkCard()" class="button1">Check card</button>
+    </div>
 </body>
 
 </html>
